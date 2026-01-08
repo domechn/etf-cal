@@ -1,0 +1,50 @@
+{
+  "title": "ETF 成分股重叠度分析",
+  "meta": {
+    "title": "ETF 成分股重叠度分析计算器 | 美股 & 港股 ETF Overlap Tool",
+    "description": "免费在线 ETF 重叠度分析工具。比较美股和港股 ETF 的持仓重叠情况，帮助您优化投资组合，避免重复投资。支持 VOO, QQQ, SCHD 等热门 ETF。",
+    "keywords": "ETF, 重叠度, 成分股, 投资组合, 美股, 港股, 重复投资, VOO, QQQ, 股票分析"
+  },
+  "step1": "第一步：选择市场",
+  "step2": "第二步：添加 ETF",
+  "market": {
+    "us": "美股 (US)",
+    "hk": "港股 (HK)"
+  },
+  "selected": "已选 ETF",
+  "clear": "清空",
+  "empty_list": "请添加 ETF",
+  "search_placeholder": "搜索 {{market}} ETF (例如 {{example}})...",
+  "analyze_btn": "开始分析",
+  "analyzing": "分析中...",
+  "error": {
+    "min_two": "请至少选择两个 ETF 进行比较",
+    "failed": "分析失败，请检查网络或稍后重试"
+  },
+  "ready_state": {
+    "title": "准备就绪",
+    "desc": "请在左侧选择市场并添加至少两个 ETF，点击“开始分析”查看它们的持仓重叠情况。",
+    "note": "注意：基于 Public API 限制，目前仅支持分析前 10 大重仓股。"
+  },
+  "result": {
+    "title": "分析结果",
+    "desc": "比较了 {{tickers}} 的成分股重叠情况。",
+    "note": "* 数据来源于 Yahoo Finance，可能仅包含前 10 大持仓。",
+    "holdings_overview": "持仓概览",
+    "no_data": "暂无数据"
+  },
+  "matrix": {
+    "title": "重叠度矩阵",
+    "click_hint": "点击查看详情",
+    "modal": {
+      "title": "重叠分析详情",
+      "weight": "重叠权重",
+      "common_stocks": "共同成分股",
+      "count_unit": "只",
+      "symbol": "代码",
+      "name": "名称",
+      "weight_in": "{{ticker}} 权重",
+      "no_common": "无共同成分股 (基于已披露的 Top Holdings)"
+    }
+  }
+}

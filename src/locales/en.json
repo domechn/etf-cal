@@ -1,0 +1,50 @@
+{
+  "title": "ETF Overlap Calculator",
+  "meta": {
+    "title": "ETF Overlap Calculator | US & HK Stocks",
+    "description": "Free online ETF overlap analysis tool. Compare holdings overlap between US and HK ETFs to optimize your portfolio and avoid duplication.",
+    "keywords": "ETF, Overlap, Holdings, Portfolio, US Stocks, HK Stocks, Diversification"
+  },
+  "step1": "Step 1: Select Market",
+  "step2": "Step 2: Add ETFs",
+  "market": {
+    "us": "US Market",
+    "hk": "HK Market"
+  },
+  "selected": "Selected ETFs",
+  "clear": "Clear",
+  "empty_list": "Please add ETFs",
+  "search_placeholder": "Search {{market}} ETF (e.g., {{example}})...",
+  "analyze_btn": "Analyze",
+  "analyzing": "Analyzing...",
+  "error": {
+    "min_two": "Please select at least two ETFs to compare",
+    "failed": "Analysis failed, please check network or try again later"
+  },
+  "ready_state": {
+    "title": "Ready",
+    "desc": "Select a market and add at least two ETFs on the left, then click 'Analyze' to see their holdings overlap.",
+    "note": "Note: Due to public API limits, only Top 10 holdings are analyzed currently."
+  },
+  "result": {
+    "title": "Analysis Result",
+    "desc": "Comparing holdings overlap for {{tickers}}.",
+    "note": "* Data from Yahoo Finance, may only include Top 10 holdings.",
+    "holdings_overview": "Holdings Overview",
+    "no_data": "No data"
+  },
+  "matrix": {
+    "title": "Overlap Matrix",
+    "click_hint": "Click for details",
+    "modal": {
+      "title": "Overlap Details",
+      "weight": "Overlap Weight",
+      "common_stocks": "Common Holdings",
+      "count_unit": "",
+      "symbol": "Symbol",
+      "name": "Name",
+      "weight_in": "{{ticker}} Weight",
+      "no_common": "No common holdings found (based on disclosed Top Holdings)"
+    }
+  }
+}

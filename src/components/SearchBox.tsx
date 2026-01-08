@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Plus, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { searchETFs } from '../api';
 import type { ETFSearchResult } from '../api';
 
@@ -9,6 +10,7 @@ interface SearchBoxProps {
 }
 
 export const SearchBox: React.FC<SearchBoxProps> = ({ onAdd, market }) => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<ETFSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -74,7 +76,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ onAdd, market }) => {
         <input
           type="text"
           className="w-full px-4 py-2 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder={`搜索 ${market} ETF (e.g., ${market === 'US' ? 'SPY' : '2800.HK'})...`}
+          placeholder={t('search_placeholder', { market, example: market === 'US' ? 'SPY' : '2800.HK' })}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsOpen(true)}

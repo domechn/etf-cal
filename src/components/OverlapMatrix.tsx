@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import type { AnalysisResult } from '../api';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   data: AnalysisResult;
 }
 
 export const OverlapMatrix: React.FC<Props> = ({ data }) => {
+  const { t } = useTranslation();
   const { overlap_matrix, tickers, etf_info } = data;
   const [selectedCell, setSelectedCell] = useState<{i: number, j: number} | null>(null);
 
   return (
     <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">重叠度矩阵</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">{t('matrix.title')}</h2>
       <div className="overflow-x-auto bg-white rounded-lg shadow">
         <table className="min-w-full border-collapse">
           <thead>
@@ -48,7 +50,7 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
                       )}
                       style={bgStyle}
                       onClick={() => !isDiag && setSelectedCell({i, j})}
-                      title={!isDiag ? `点击查看详情` : ''}
+                      title={!isDiag ? t('matrix.click_hint') : ''}
                     >
                       {(cell.weight * 100).toFixed(1)}%
                     </td>
@@ -66,7 +68,7 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
             <div className="flex justify-between items-center mb-6 border-b pb-4">
               <div>
                 <h3 className="text-xl font-bold text-gray-900">
-                  重叠分析详情
+                  {t('matrix.modal.title')}
                 </h3>
                 <p className="text-gray-500 mt-1">
                   {tickers[selectedCell.i]} <span className="mx-2">vs</span> {tickers[selectedCell.j]}
@@ -82,12 +84,12 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
             
             <div className="grid grid-cols-2 gap-4 mb-6 bg-blue-50 p-4 rounded-lg">
                <div>
-                 <p className="text-sm text-gray-500">重叠权重</p>
+                 <p className="text-sm text-gray-500">{t('matrix.modal.weight')}</p>
                  <p className="text-2xl font-bold text-blue-600">{(overlap_matrix[selectedCell.i][selectedCell.j].weight * 100).toFixed(2)}%</p>
                </div>
                <div>
-                 <p className="text-sm text-gray-500">共同成分股</p>
-                 <p className="text-2xl font-bold text-blue-600">{overlap_matrix[selectedCell.i][selectedCell.j].count} <span className="text-sm font-normal text-gray-500">只</span></p>
+                 <p className="text-sm text-gray-500">{t('matrix.modal.common_stocks')}</p>
+                 <p className="text-2xl font-bold text-blue-600">{overlap_matrix[selectedCell.i][selectedCell.j].count} <span className="text-sm font-normal text-gray-500">{t('matrix.modal.count_unit')}</span></p>
                </div>
             </div>
 
@@ -95,10 +97,10 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 sticky top-0">
                   <tr>
-                    <th className="text-left p-3 font-semibold text-gray-600">代码</th>
-                    <th className="text-left p-3 font-semibold text-gray-600">名称</th>
-                    <th className="text-right p-3 font-semibold text-gray-600">{tickers[selectedCell.i]} 权重</th>
-                    <th className="text-right p-3 font-semibold text-gray-600">{tickers[selectedCell.j]} 权重</th>
+                    <th className="text-left p-3 font-semibold text-gray-600">{t('matrix.modal.symbol')}</th>
+                    <th className="text-left p-3 font-semibold text-gray-600">{t('matrix.modal.name')}</th>
+                    <th className="text-right p-3 font-semibold text-gray-600">{t('matrix.modal.weight_in', { ticker: tickers[selectedCell.i] })}</th>
+                    <th className="text-right p-3 font-semibold text-gray-600">{t('matrix.modal.weight_in', { ticker: tickers[selectedCell.j] })}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -116,7 +118,7 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
                   ) : (
                     <tr>
                       <td colSpan={4} className="p-8 text-center text-gray-500">
-                        无共同成分股 (基于已披露的 Top Holdings)
+                        {t('matrix.modal.no_common')}
                       </td>
                     </tr>
                   )}

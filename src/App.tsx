@@ -1,17 +1,26 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { SearchBox } from './components/SearchBox';
 import { OverlapMatrix } from './components/OverlapMatrix';
 import { analyzeETFs } from './api';
 import type { AnalysisResult } from './api';
-import { Github, Trash2, TrendingUp } from 'lucide-react';
+import { Github, Trash2, TrendingUp, Languages } from 'lucide-react';
 
 function App() {
+  const { t, i18n } = useTranslation();
   const [market, setMarket] = useState<'US' | 'HK'>('US');
   const [selectedETFs, setSelectedETFs] = useState<string[]>([]);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const toggleLanguage = () => {
+    // Check current resolved language (might be 'zh-CN' or similar from detector)
+    const currentLang = i18n.resolvedLanguage || i18n.language;
+    const newLang = currentLang.startsWith('en') ? 'zh' : 'en';
+    i18n.changeLanguage(newLang);
+  };
 
   const handleAdd = (ticker: string) => {
     if (!selectedETFs.includes(ticker)) {
@@ -25,7 +34,7 @@ function App() {
 
   const handleAnalyze = async () => {
     if (selectedETFs.length < 2) {
-      setError('请至少选择两个 ETF 进行比较');
+      setError(t('error.min_two'));
       return;
     }
     setLoading(true);
@@ -34,7 +43,7 @@ function App() {
       const data = await analyzeETFs(selectedETFs, market);
       setResult(data);
     } catch (e) {
-      setError('分析失败，请检查网络或稍后重试');
+      setError(t('error.failed'));
       console.error(e);
     } finally {
       setLoading(false);
@@ -44,31 +53,39 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       <Helmet>
-        <title>ETF 成分股重叠度分析计算器 | 美股 & 港股 ETF Overlap Tool</title>
-        <meta name="description" content="免费在线 ETF 重叠度分析工具。比较美股和港股 ETF 的持仓重叠情况，帮助您优化投资组合，避免重复投资。支持 VOO, QQQ, SCHD 等热门 ETF。" />
-        <meta name="keywords" content="ETF, 重叠度, 成分股, 投资组合, 美股, 港股, 重复投资, VOO, QQQ, 股票分析" />
+        <title>{t('meta.title')}</title>
+        <meta name="description" content={t('meta.description')} />
+        <meta name="keywords" content={t('meta.keywords')} />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="ETF 成分股重叠度分析计算器" />
-        <meta property="og:description" content="快速分析多个 ETF 之间的持仓重叠。支持美股和港股数据。" />
+        <meta property="og:title" content={t('meta.title')} />
+        <meta property="og:description" content={t('meta.description')} />
         <meta property="og:image" content="https://your-domain.com/og-image.jpg" /> {/* Replace with actual image URL */}
         
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:title" content="ETF 成分股重叠度分析计算器" />
-        <meta property="twitter:description" content="快速分析多个 ETF 之间的持仓重叠。支持美股和港股数据。" />
+        <meta property="twitter:title" content={t('meta.title')} />
+        <meta property="twitter:description" content={t('meta.description')} />
       </Helmet>
       <header className="bg-white border-b shadow-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <TrendingUp className="text-blue-600 w-8 h-8" />
             <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              ETF 成分股重叠度分析
+              {t('title')}
             </h1>
           </div>
           <div className="flex items-center gap-4 text-sm text-gray-500">
-            <span>Powered by Yahoo Finance</span>
+            <button 
+              onClick={toggleLanguage}
+              className="flex items-center gap-1 hover:text-gray-900 transition-colors"
+              title="Switch Language"
+            >
+              <Languages className="w-4 h-4" />
+              <span className="uppercase font-medium">{i18n.language}</span>
+            </button>
+            <span className="hidden sm:inline">Powered by Yahoo Finance</span>
             <a
               href="https://github.com/domechn/etf-cal"
               target="_blank"
@@ -87,40 +104,40 @@ function App() {
           {/* Sidebar / Control Panel */}
           <div className="md:col-span-1 space-y-6">
             <div className="bg-white p-6 rounded-xl shadow-sm border">
-              <h2 className="font-semibold mb-4 text-gray-700">第一步：选择市场</h2>
+              <h2 className="font-semibold mb-4 text-gray-700">{t('step1')}</h2>
               <div className="flex p-1 bg-gray-100 rounded-lg">
                 <button
                   onClick={() => setMarket('US')}
                   className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${market === 'US' ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                 >
-                  美股 (US)
+                  {t('market.us')}
                 </button>
                 <button
                   onClick={() => setMarket('HK')}
                   className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${market === 'HK' ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                 >
-                  港股 (HK)
+                  {t('market.hk')}
                 </button>
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-xl shadow-sm border">
-              <h2 className="font-semibold mb-4 text-gray-700">第二步：添加 ETF</h2>
+              <h2 className="font-semibold mb-4 text-gray-700">{t('step2')}</h2>
               <SearchBox onAdd={handleAdd} market={market} />
               
               <div className="mt-6">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-500">已选 ETF ({selectedETFs.length})</span>
+                  <span className="text-sm font-medium text-gray-500">{t('selected')} ({selectedETFs.length})</span>
                   {selectedETFs.length > 0 && (
                     <button onClick={() => setSelectedETFs([])} className="text-xs text-red-500 hover:underline">
-                      清空
+                      {t('clear')}
                     </button>
                   )}
                 </div>
                 
                 {selectedETFs.length === 0 ? (
                   <div className="text-center py-8 text-gray-400 bg-gray-50 rounded-lg border border-dashed">
-                    请添加 ETF
+                    {t('empty_list')}
                   </div>
                 ) : (
                   <ul className="space-y-2">
@@ -146,7 +163,7 @@ function App() {
                   : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:shadow-blue-200'
               }`}
             >
-              {loading ? '分析中...' : '开始分析'}
+              {loading ? t('analyzing') : t('analyze_btn')}
             </button>
             {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
           </div>
@@ -156,19 +173,19 @@ function App() {
             {!result ? (
               <div className="h-full flex flex-col items-center justify-center text-gray-400 bg-white rounded-xl shadow-sm border p-12 text-center min-h-[400px]">
                 <TrendingUp className="w-16 h-16 mb-4 text-gray-200" />
-                <h3 className="text-lg font-medium text-gray-600 mb-2">准备就绪</h3>
-                <p className="max-w-xs mx-auto">请在左侧选择市场并添加至少两个 ETF，点击“开始分析”查看它们的持仓重叠情况。</p>
-                <p className="mt-4 text-xs text-orange-400">注意：基于 Public API 限制，目前仅支持分析前 10 大重仓股。</p>
+                <h3 className="text-lg font-medium text-gray-600 mb-2">{t('ready_state.title')}</h3>
+                <p className="max-w-xs mx-auto">{t('ready_state.desc')}</p>
+                <p className="mt-4 text-xs text-orange-400">{t('ready_state.note')}</p>
               </div>
             ) : (
               <div className="bg-white rounded-xl shadow-sm border p-6 min-h-[400px]">
                  <div className="mb-6 pb-6 border-b">
-                   <h2 className="text-2xl font-bold mb-2">分析结果</h2>
+                   <h2 className="text-2xl font-bold mb-2">{t('result.title')}</h2>
                    <p className="text-gray-500 text-sm">
-                     比较了 {result.tickers.join(', ')} 的成分股重叠情况。
+                     {t('result.desc', { tickers: result.tickers.join(', ') })}
                      <br/>
                      <span className="text-xs text-orange-500">
-                       * 数据来源于 Yahoo Finance，可能仅包含前 10 大持仓。
+                       {t('result.note')}
                      </span>
                    </p>
                  </div>
@@ -177,7 +194,7 @@ function App() {
                  
                  {/* Raw Holdings List */}
                  <div className="mt-12">
-                    <h3 className="text-lg font-bold mb-4">持仓概览</h3>
+                    <h3 className="text-lg font-bold mb-4">{t('result.holdings_overview')}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {result.tickers.map(ticker => (
                         <div key={ticker} className="border rounded-lg overflow-hidden">
@@ -194,7 +211,7 @@ function App() {
                                  </li>
                                ))
                              ) : (
-                               <li className="p-4 text-center text-gray-400 text-sm">暂无数据</li>
+                               <li className="p-4 text-center text-gray-400 text-sm">{t('result.no_data')}</li>
                              )}
                            </ul>
                         </div>
