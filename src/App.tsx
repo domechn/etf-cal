@@ -4,7 +4,7 @@ import { SearchBox } from './components/SearchBox';
 import { OverlapMatrix } from './components/OverlapMatrix';
 import { analyzeETFs } from './api';
 import type { AnalysisResult } from './api';
-import { Trash2, TrendingUp } from 'lucide-react';
+import { Github, Trash2, TrendingUp } from 'lucide-react';
 
 function App() {
   const [market, setMarket] = useState<'US' | 'HK'>('US');
@@ -67,8 +67,17 @@ function App() {
               ETF 成分股重叠度分析
             </h1>
           </div>
-          <div className="text-sm text-gray-500">
-            Powered by Yahoo Finance
+          <div className="flex items-center gap-4 text-sm text-gray-500">
+            <span>Powered by Yahoo Finance</span>
+            <a
+              href="https://github.com/domechn/etf-cal"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-900 transition-colors"
+              aria-label="GitHub Repository"
+            >
+              <Github className="w-5 h-5" />
+            </a>
           </div>
         </div>
       </header>
