@@ -85,8 +85,8 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ onAdd, market }) => {
         {loading && <Loader2 className="absolute right-3 top-2.5 text-blue-500 w-5 h-5 animate-spin" />}
       </div>
 
-      {isOpen && results.length > 0 && (
-        <ul className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
+       {isOpen && results.length > 0 && (
+         <ul className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto max-w-full">
           {results.map((item) => (
             <li
               key={item.symbol}
