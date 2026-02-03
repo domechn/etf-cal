@@ -71,7 +71,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ onAdd, market }) => {
   };
 
   return (
-    <div className="relative w-full max-w-md" ref={wrapperRef}>
+    <div className="relative w-full" ref={wrapperRef}>
       <div className="relative">
         <input
           type="text"
@@ -95,7 +95,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ onAdd, market }) => {
             >
               <div>
                 <div className="font-bold">{item.symbol}</div>
-                <div className="text-sm text-gray-500 truncate w-64">{item.shortname || item.longname}</div>
+                <div className="text-sm text-gray-500 truncate max-w-[10rem] sm:max-w-xs">{item.shortname || item.longname}</div>
               </div>
               <Plus className="w-4 h-4 text-blue-500" />
             </li>
