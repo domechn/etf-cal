@@ -70,9 +70,9 @@ function App() {
       </Helmet>
       <header className="bg-white border-b shadow-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col items-start gap-3 sm:flex-row sm:justify-between sm:items-center">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <TrendingUp className="text-blue-600 w-8 h-8" />
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="flex-1 min-w-0 break-words text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               {t('title')}
             </h1>
           </div>
