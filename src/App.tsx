@@ -72,7 +72,10 @@ function App() {
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <TrendingUp className="text-blue-600 w-8 h-8 shrink-0" />
-            <h1 className="flex-1 min-w-0 truncate text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent sm:text-xl">
+            <h1
+              className="flex-1 min-w-0 truncate text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent sm:text-xl"
+              title={t('title')}
+            >
               {t('title')}
             </h1>
           </div>
