@@ -13,10 +13,10 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
   const [selectedCell, setSelectedCell] = useState<{i: number, j: number} | null>(null);
 
   return (
-    <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">{t('matrix.title')}</h2>
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="min-w-full border-collapse text-xs sm:text-sm">
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">{t('matrix.title')}</h2>
+        <div className="overflow-x-auto bg-white rounded-lg shadow max-w-full">
+          <table className="min-w-full border-collapse text-xs sm:text-sm">
           <thead>
             <tr>
               <th className="p-2 sm:p-3 border-b bg-gray-50"></th>
@@ -64,7 +64,7 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
 
       {selectedCell && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedCell(null)}>
-          <div className="bg-white rounded-xl shadow-2xl p-6 max-w-3xl w-full max-h-[85vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-2xl p-4 sm:p-6 max-w-3xl w-full max-h-[85vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6 border-b pb-4">
               <div>
                 <h3 className="text-xl font-bold text-gray-900">
