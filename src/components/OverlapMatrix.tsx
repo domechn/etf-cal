@@ -16,14 +16,14 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
     <div className="mt-8">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">{t('matrix.title')}</h2>
       <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="min-w-full border-collapse">
+        <table className="min-w-full border-collapse text-xs sm:text-sm">
           <thead>
             <tr>
-              <th className="p-3 border-b bg-gray-50"></th>
+              <th className="p-2 sm:p-3 border-b bg-gray-50"></th>
               {tickers.map(t => (
-                <th key={t} className="p-3 border-b bg-gray-50 text-sm text-gray-700">
+                <th key={t} className="p-2 sm:p-3 border-b bg-gray-50 text-gray-700">
                   <div className="font-bold">{t}</div>
-                  <div className="text-xs font-normal text-gray-500 truncate max-w-[150px]" title={etf_info[t]?.shortname}>{etf_info[t]?.shortname}</div>
+                  <div className="text-xs font-normal text-gray-500 truncate max-w-[120px] sm:max-w-[150px]" title={etf_info[t]?.shortname}>{etf_info[t]?.shortname}</div>
                 </th>
               ))}
             </tr>
@@ -31,7 +31,7 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
           <tbody>
             {overlap_matrix.map((row, i) => (
               <tr key={i}>
-                <th className="p-3 border-b bg-gray-50 text-sm text-left text-gray-700">
+                <th className="p-2 sm:p-3 border-b bg-gray-50 text-left text-gray-700">
                   <div className="font-bold">{tickers[i]}</div>
                 </th>
                 {row.map((cell, j) => {
@@ -45,7 +45,7 @@ export const OverlapMatrix: React.FC<Props> = ({ data }) => {
                     <td 
                       key={j} 
                       className={clsx(
-                        "p-3 border text-center transition-all",
+                        "p-2 sm:p-3 border text-center transition-all",
                         !isDiag && "cursor-pointer hover:ring-2 hover:ring-blue-500 hover:z-10 relative"
                       )}
                       style={bgStyle}

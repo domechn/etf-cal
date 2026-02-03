@@ -69,14 +69,14 @@ function App() {
         <meta property="twitter:description" content={t('meta.description')} />
       </Helmet>
       <header className="bg-white border-b shadow-sm sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col items-start gap-3 sm:flex-row sm:justify-between sm:items-center">
           <div className="flex items-center gap-2">
             <TrendingUp className="text-blue-600 w-8 h-8" />
             <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               {t('title')}
             </h1>
           </div>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
+          <div className="flex flex-col items-start gap-2 text-sm text-gray-500 sm:flex-row sm:items-center sm:gap-4">
             <button 
               onClick={toggleLanguage}
               className="flex items-center gap-1 hover:text-gray-900 transition-colors"
@@ -195,28 +195,28 @@ function App() {
                  {/* Raw Holdings List */}
                  <div className="mt-12">
                     <h3 className="text-lg font-bold mb-4">{t('result.holdings_overview')}</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {result.tickers.map(ticker => (
-                        <div key={ticker} className="border rounded-lg overflow-hidden">
-                           <div className="bg-gray-50 p-3 border-b font-bold flex justify-between">
-                             <span>{ticker}</span>
-                             <span className="text-xs font-normal text-gray-500 self-center truncate max-w-[150px]">{result.etf_info[ticker]?.shortname}</span>
-                           </div>
-                           <ul className="max-h-60 overflow-y-auto divide-y">
-                             {result.holdings[ticker].length > 0 ? (
-                               result.holdings[ticker].map((h, i) => (
-                                 <li key={i} className="p-2 text-sm flex justify-between hover:bg-gray-50">
-                                   <span className="truncate flex-1 mr-2" title={h.name}>{h.name}</span>
-                                   <span className="font-mono text-gray-600">{(h.percent * 100).toFixed(2)}%</span>
-                                 </li>
-                               ))
-                             ) : (
-                               <li className="p-4 text-center text-gray-400 text-sm">{t('result.no_data')}</li>
-                             )}
-                           </ul>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {result.tickers.map(ticker => (
+                      <div key={ticker} className="border rounded-lg overflow-hidden">
+                        <div className="bg-gray-50 p-3 border-b font-bold flex flex-wrap items-center justify-between gap-2">
+                          <span>{ticker}</span>
+                          <span className="text-xs font-normal text-gray-500 self-center truncate max-w-[110px] sm:max-w-[150px]">{result.etf_info[ticker]?.shortname}</span>
                         </div>
-                      ))}
-                    </div>
+                        <ul className="max-h-60 overflow-y-auto divide-y">
+                          {result.holdings[ticker].length > 0 ? (
+                            result.holdings[ticker].map((h, i) => (
+                              <li key={i} className="p-2 text-sm flex justify-between hover:bg-gray-50">
+                                <span className="truncate flex-1 mr-2" title={h.name}>{h.name}</span>
+                                <span className="font-mono text-gray-600">{(h.percent * 100).toFixed(2)}%</span>
+                              </li>
+                            ))
+                          ) : (
+                            <li className="p-4 text-center text-gray-400 text-sm">{t('result.no_data')}</li>
+                          )}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
                  </div>
               </div>
             )}
