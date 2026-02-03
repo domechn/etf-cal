@@ -69,17 +69,20 @@ function App() {
         <meta property="twitter:description" content={t('meta.description')} />
       </Helmet>
       <header className="bg-white border-b shadow-sm sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col items-start gap-3 sm:flex-row sm:justify-between sm:items-center">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <TrendingUp className="text-blue-600 w-8 h-8" />
-            <h1 className="flex-1 min-w-0 break-words text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <TrendingUp className="text-blue-600 w-8 h-8 shrink-0" />
+            <h1
+              className="flex-1 min-w-0 truncate text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent sm:text-xl"
+              title={t('title')}
+            >
               {t('title')}
             </h1>
           </div>
-          <div className="flex flex-col items-start gap-2 text-sm text-gray-500 sm:flex-row sm:items-center sm:gap-4">
+          <div className="flex items-center gap-2 text-sm text-gray-500 shrink-0 sm:gap-4">
             <button 
               onClick={toggleLanguage}
-              className="flex items-center gap-1 hover:text-gray-900 transition-colors"
+              className="flex items-center gap-1 hover:text-gray-900 transition-colors whitespace-nowrap"
               title="Switch Language"
             >
               <Languages className="w-4 h-4" />
