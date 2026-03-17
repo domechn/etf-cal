@@ -33,5 +33,4 @@
 
 - **前端**: React, TypeScript, Tailwind CSS
 - **构建工具**: Vite
-- **后端/API**: Node.js, Express (适配 Vercel Serverless Functions)
-- **数据源**: Yahoo Finance API (yahoo-finance2)
+- **数据获取**: 前端直接请求 Yahoo Finance API
