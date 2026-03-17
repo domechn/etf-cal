@@ -11,22 +11,30 @@ app.use(express.json());
 
 // 搜索 API
 app.get('/api/search', async (req, res) => {
-  const q = req.query.q;
+  const rawQuery = Array.isArray(req.query.q) ? req.query.q[0] : req.query.q;
+  const q = typeof rawQuery === 'string' ? rawQuery.trim() : '';
   if (!q) return res.json([]);
   
   try {
-    const results = await yahooFinance.search(q);
-    const etfs = results.quotes
-      .filter(q => q.quoteType === 'ETF')
-      .map(q => ({
-        symbol: q.symbol,
-        shortname: q.shortname || '',
-        longname: q.longname || '',
-        exchange: q.exchange || ''
+    const results = await yahooFinance.search(q, undefined, { validateResult: false });
+    const quotes = Array.isArray(results?.quotes) ? results.quotes : [];
+    const etfs = quotes
+      .filter((quote) =>
+        quote &&
+        typeof quote === 'object' &&
+        quote.quoteType === 'ETF' &&
+        typeof quote.symbol === 'string' &&
+        quote.symbol.trim() !== ''
+      )
+      .map((quote) => ({
+        symbol: quote.symbol,
+        shortname: typeof quote.shortname === 'string' ? quote.shortname : '',
+        longname: typeof quote.longname === 'string' ? quote.longname : '',
+        exchange: typeof quote.exchange === 'string' ? quote.exchange : ''
       }));
     res.json(etfs);
   } catch (error) {
-    console.error('Search error:', error);
+    console.error(`Search error for "${q}":`, error);
     res.status(500).json({ error: error.message });
   }
 });
