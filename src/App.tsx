@@ -40,7 +40,7 @@ function App() {
     setLoading(true);
     setError('');
     try {
-      const data = await analyzeETFs(selectedETFs);
+      const data = await analyzeETFs(selectedETFs, market);
       setResult(data);
     } catch (e) {
       setError(t('error.failed'));

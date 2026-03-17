@@ -1,6 +1,8 @@
 const YAHOO_SEARCH_URL = 'https://query1.finance.yahoo.com/v1/finance/search';
 const YAHOO_QUOTE_SUMMARY_URL = 'https://query2.finance.yahoo.com/v10/finance/quoteSummary';
 
+type Market = 'US' | 'HK';
+
 export interface ETFSearchResult {
   symbol: string;
   shortname: string;
@@ -64,6 +66,20 @@ interface YahooQuoteSummaryResponse {
   };
 }
 
+const getYahooLocale = (market: Market) => {
+  if (market === 'HK') {
+    return {
+      lang: 'zh-Hant-HK',
+      region: 'HK',
+    };
+  }
+
+  return {
+    lang: 'en-US',
+    region: 'US',
+  };
+};
+
 const getJson = async <T>(url: string): Promise<T> => {
   const response = await fetch(url, {
     headers: {
@@ -73,7 +89,10 @@ const getJson = async <T>(url: string): Promise<T> => {
   });
 
   if (!response.ok) {
-    throw new Error(`Yahoo Finance request failed with status ${response.status}`);
+    const responseText = await response.text();
+    throw new Error(
+      `Yahoo Finance request failed (${response.status}) for ${url}: ${responseText || 'empty response'}`
+    );
   }
 
   return response.json() as Promise<T>;
@@ -84,6 +103,9 @@ const normalizeHoldingPercent = (value: number | undefined): number => {
     return 0;
   }
 
+  // Yahoo Finance normally returns holdingPercent as a decimal (0.07 = 7%).
+  // If it comes back as a whole percentage (7 = 7%), only values above 1 are
+  // divided by 100; values at or below 1 are treated as decimals and left as-is.
   return value > 1 ? value / 100 : value;
 };
 
@@ -143,12 +165,13 @@ const buildOverlapMatrix = (
   });
 };
 
-export const searchETFs = async (query: string): Promise<ETFSearchResult[]> => {
+export const searchETFs = async (query: string, market: Market): Promise<ETFSearchResult[]> => {
   const trimmedQuery = query.trim();
   if (!trimmedQuery) {
     return [];
   }
 
+  const { lang, region } = getYahooLocale(market);
   const url = new URL(YAHOO_SEARCH_URL);
   url.searchParams.set('q', trimmedQuery);
   url.searchParams.set('quotesCount', '10');
@@ -156,8 +179,8 @@ export const searchETFs = async (query: string): Promise<ETFSearchResult[]> => {
   url.searchParams.set('enableFuzzyQuery', 'false');
   url.searchParams.set('enableNavLinks', 'false');
   url.searchParams.set('enableEnhancedTrivialQuery', 'true');
-  url.searchParams.set('lang', 'en-US');
-  url.searchParams.set('region', 'US');
+  url.searchParams.set('lang', lang);
+  url.searchParams.set('region', region);
 
   const response = await getJson<YahooSearchResponse>(url.toString());
 
@@ -171,8 +194,9 @@ export const searchETFs = async (query: string): Promise<ETFSearchResult[]> => {
     }));
 };
 
-export const analyzeETFs = async (tickers: string[]): Promise<AnalysisResult> => {
+export const analyzeETFs = async (tickers: string[], market: Market): Promise<AnalysisResult> => {
   const uniqueTickers = [...new Set(tickers.map((ticker) => ticker.trim()).filter(Boolean))];
+  const { lang, region } = getYahooLocale(market);
 
   if (uniqueTickers.length === 0) {
     return {
@@ -191,8 +215,8 @@ export const analyzeETFs = async (tickers: string[]): Promise<AnalysisResult> =>
       const url = new URL(`${YAHOO_QUOTE_SUMMARY_URL}/${encodeURIComponent(symbol)}`);
       url.searchParams.set('modules', 'topHoldings,price,summaryDetail');
       url.searchParams.set('formatted', 'false');
-      url.searchParams.set('lang', 'en-US');
-      url.searchParams.set('region', 'US');
+      url.searchParams.set('lang', lang);
+      url.searchParams.set('region', region);
       url.searchParams.set('corsDomain', 'finance.yahoo.com');
 
       try {

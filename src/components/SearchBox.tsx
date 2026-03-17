@@ -33,7 +33,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ onAdd, market }) => {
       }
       setLoading(true);
       try {
-        const data = await searchETFs(debouncedQuery);
+        const data = await searchETFs(debouncedQuery, market);
         // Filter by market if needed, but Yahoo search is global.
         // We can prioritize or filter based on suffix if user strictly wants HK/US.
         // Simple heuristic: HK stocks usually end with .HK or are numbers.
