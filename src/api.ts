@@ -103,9 +103,9 @@ const normalizeHoldingPercent = (value: number | undefined): number => {
     return 0;
   }
 
-  // Yahoo Finance normally returns holdingPercent as a decimal (0.07 = 7%).
-  // If it comes back as a whole percentage (7 = 7%), only values above 1 are
-  // divided by 100; values at or below 1 are treated as decimals and left as-is.
+  // Yahoo Finance normally returns holdingPercent as a decimal in the 0..1
+  // range (0.07 = 7%). If it comes back as a whole percentage instead
+  // (7 = 7%), only values above 1 are divided by 100.
   return value > 1 ? value / 100 : value;
 };
 
@@ -224,7 +224,12 @@ export const analyzeETFs = async (tickers: string[], market: Market): Promise<An
         const result = response.quoteSummary?.result?.[0];
 
         if (!result) {
-          throw new Error(response.quoteSummary?.error?.description || `No Yahoo Finance data for ${symbol}`);
+          const yahooError = response.quoteSummary?.error?.description;
+          throw new Error(
+            yahooError
+              ? `Yahoo Finance API error for ${symbol}: ${yahooError}`
+              : `No Yahoo Finance data available for ${symbol}`
+          );
         }
 
         const price = result.price;
