@@ -9,32 +9,44 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const isValidEtfQuote = (quote) =>
+  quote &&
+  typeof quote === 'object' &&
+  quote.quoteType === 'ETF' &&
+  typeof quote.symbol === 'string' &&
+  quote.symbol.trim() !== '';
+
+const asString = (value) => typeof value === 'string' ? value : '';
+
 // 搜索 API
 app.get('/api/search', async (req, res) => {
-  const rawQuery = Array.isArray(req.query.q) ? req.query.q[0] : req.query.q;
+  let rawQuery = req.query.q;
+  // Express exposes repeated ?q=... parameters as an array; use the first value.
+  if (Array.isArray(req.query.q)) {
+    rawQuery = req.query.q.length > 0 ? req.query.q[0] : '';
+  }
   const q = typeof rawQuery === 'string' ? rawQuery.trim() : '';
   if (!q) return res.json([]);
   
   try {
-    const results = await yahooFinance.search(q, undefined, { validateResult: false });
+    // Yahoo search occasionally returns mixed quote payloads that fail library validation
+    // even though the ETF rows we need are still present.
+    // We don't need to override Yahoo's search query options for this endpoint.
+    const searchOptions = {};
+    const moduleOptions = { validateResult: false };
+    const results = await yahooFinance.search(q, searchOptions, moduleOptions);
     const quotes = Array.isArray(results?.quotes) ? results.quotes : [];
     const etfs = quotes
-      .filter((quote) =>
-        quote &&
-        typeof quote === 'object' &&
-        quote.quoteType === 'ETF' &&
-        typeof quote.symbol === 'string' &&
-        quote.symbol.trim() !== ''
-      )
+      .filter(isValidEtfQuote)
       .map((quote) => ({
-        symbol: quote.symbol,
-        shortname: typeof quote.shortname === 'string' ? quote.shortname : '',
-        longname: typeof quote.longname === 'string' ? quote.longname : '',
-        exchange: typeof quote.exchange === 'string' ? quote.exchange : ''
+        symbol: quote.symbol.trim(),
+        shortname: asString(quote.shortname),
+        longname: asString(quote.longname),
+        exchange: asString(quote.exchange)
       }));
     res.json(etfs);
   } catch (error) {
-    console.error(`Search error for "${q}":`, error);
+    console.error('Search error:', error);
     res.status(500).json({ error: error.message });
   }
 });
