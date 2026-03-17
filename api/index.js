@@ -9,20 +9,40 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const isValidEtfQuote = (quote) =>
+  quote &&
+  typeof quote === 'object' &&
+  quote.quoteType === 'ETF' &&
+  typeof quote.symbol === 'string' &&
+  quote.symbol.trim() !== '';
+
+const asString = (value) => typeof value === 'string' ? value : '';
+
 // 搜索 API
 app.get('/api/search', async (req, res) => {
-  const q = req.query.q;
+  let rawQuery = req.query.q;
+  // Express exposes repeated ?q=... parameters as an array; use the first value.
+  if (Array.isArray(req.query.q)) {
+    rawQuery = req.query.q.length > 0 ? req.query.q[0] : '';
+  }
+  const q = typeof rawQuery === 'string' ? rawQuery.trim() : '';
   if (!q) return res.json([]);
   
   try {
-    const results = await yahooFinance.search(q);
-    const etfs = results.quotes
-      .filter(q => q.quoteType === 'ETF')
-      .map(q => ({
-        symbol: q.symbol,
-        shortname: q.shortname || '',
-        longname: q.longname || '',
-        exchange: q.exchange || ''
+    // Yahoo search occasionally returns mixed quote payloads that fail library validation
+    // even though the ETF rows we need are still present.
+    // We don't need to override Yahoo's search query options for this endpoint.
+    const searchOptions = {};
+    const moduleOptions = { validateResult: false };
+    const results = await yahooFinance.search(q, searchOptions, moduleOptions);
+    const quotes = Array.isArray(results?.quotes) ? results.quotes : [];
+    const etfs = quotes
+      .filter(isValidEtfQuote)
+      .map((quote) => ({
+        symbol: quote.symbol.trim(),
+        shortname: asString(quote.shortname),
+        longname: asString(quote.longname),
+        exchange: asString(quote.exchange)
       }));
     res.json(etfs);
   } catch (error) {
